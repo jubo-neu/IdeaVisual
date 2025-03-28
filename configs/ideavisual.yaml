@@ -1,0 +1,26 @@
+model:
+  base_learning_rate: 5.0e-05
+  target: ldm.models.diffusion.IdeaVisual.IntentDrivenDiffusion
+  params:
+    image_size: 256
+    cfg_scale: 2.0
+    output_num: 8
+    batch_view_num: 4
+    finetune_unet: false
+    finetune_projection: false
+    drop_conditions: false
+    clip_image_encoder_path: ckpt/ViT-L-14.pt
+
+    scheduler_config:
+      target: ldm.lr_scheduler.LambdaLinearScheduler
+      params:
+        warm_up_steps: [ 100 ]
+        cycle_lengths: [ 100000 ]
+        f_start: [ 0.02 ]
+        f_max: [ 1.0 ]
+        f_min: [ 1.0 ]
+
+data: {}
+
+lightning:
+  trainer: {}
