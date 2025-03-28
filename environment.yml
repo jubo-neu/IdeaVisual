@@ -1,0 +1,31 @@
+name: IdeaVisual
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.8
+  - pytorch-lightning=1.9.0
+  - pillow=10.0.0
+  - opencv
+  - transformers
+  - tqdm
+  - numpy
+  - kornia
+  - webdataset
+  - omegaconf
+  - einops
+  - scikit-image
+  - pymcubes
+  - open3d
+  - trimesh
+  - easydict
+  - imageio-ffmpeg=0.4.7
+
+  - pip:
+    - git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+    - git+https://github.com/openai/CLIP.git
+    - taming-transformers-rom1504
+    - carvekit-colab
+    - nerfacc
