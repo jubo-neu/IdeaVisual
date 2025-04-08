@@ -1,4 +1,8 @@
+# Idea Visual
+## [Paper] Idea Visual: Intent-Driven View Synthesis via Multimodal Diffusion Model
+These are codes and dataset releases for submission.
 
+![Teaser](https://github.com/jubo-neu/IdeaVisual/blob/main/teaser.png)
 
 ## TODO
 - [x] Benchmark.
