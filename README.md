@@ -1,6 +1,6 @@
 # Idea Visual
-## [Paper] Idea Visual: Intent-Driven View Synthesis via Multimodal Diffusion Model
-These are codes and dataset releases for submission.
+## [Paper] Idea Visual: Intent-Driven View Synthesis for Smart Mobile Devices via Retrieval-Augmented Diffusion Models
+❗️To resist plagiarism, Training code and Inference code will be available upon acceptance.
 
 ![Teaser](https://github.com/jubo-neu/IdeaVisual/blob/main/teaser.png)
 
@@ -9,8 +9,6 @@ These are codes and dataset releases for submission.
 - [x] Models and tools.
 - [ ] Training code and inference code.
 - [ ] Checkpoints.
-
-❗️2025-01-20: To resist plagiarism, Training code and Inference code will be available upon acceptance.
 
 ### News
 - Training code is being released.
