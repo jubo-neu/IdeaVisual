@@ -65,3 +65,4 @@ python train_IdeaVisual.py -conf configs/ideavisual.yaml -c <ckpt-dir> --ft <you
 
 
 ## Inference
+The code will be released after the paper is officially accepted.
