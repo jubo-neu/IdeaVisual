@@ -1,32 +1,55 @@
 # Idea Visual
 ## [Paper] Idea Visual: Intent-Driven View Synthesis for Smart Mobile Devices via Retrieval-Augmented Diffusion Models
-❗️To resist plagiarism, Training code and Inference code will be available upon acceptance.
+
+## Graphic overview
 
 ![Teaser](https://github.com/jubo-neu/IdeaVisual/blob/main/teaser.png)
 
-## TODO
-- [x] Benchmark.
-- [x] Models and tools.
-- [ ] Training code and inference code.
-- [ ] Checkpoints.
+## Highlights
 
-### News
-- Training code is being released.
-- Inference code and pretrained weight are coming soon.
+- **Intent-driven view synthesis:** input a source RGB image, its fixed source depth map, and a natural-language instruction.
+- **Multimodal interaction:** frozen visual/text features, image-query/text-key cross-attention, and a two-linear-layer GELU intent projector.
+- **Efficient adaptation:** intent-aware, token-wise top-k LoRA experts in frozen decoder self-attention and FFN projections.
+
+## TODO
+- [x] Training and inference.
+- [x] Text-aware Answerer loading and data validation.
+- [x] Vision-language interaction and intent projector.
+- [x] Sparse LoRA experts, top-k routing and auxiliary loss.
+- [x] Three-stage trainability policy and stage transfer.
+- [x] DDIM sampling and classifier-free guidance.
+- [x] PSNR/SSIM evaluation; optional LPIPS/FID.
 
 ## Preparation
 
-To start, we prefer creating the environment using conda:
+### Minimal CPU environment
 
+Python 3.10 or newer is required. Run commands from the repository root.
+
+```bash
+python -m venv .venv
+# Linux/macOS:
+source .venv/bin/activate
+# Windows PowerShell instead:
+# .venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -e ".[dev]"
 ```
+
+### Full diffusion environment
+
+Install matching PyTorch/torchvision builds for your GPU, then:
+
+```bash
+pip install -e ".[diffusion,metrics,dev]"
+```
+
+Or use the suggested CUDA 12.1 setup:
+
+```bash
 conda env create -f environment.yml
 conda activate IdeaVisual
-```
-
-Alternatively use
-
-```
-pip install -r requirements.txt
+pip install -e ".[diffusion,metrics,dev]"
 ```
 
 ## Getting the data
@@ -63,6 +86,41 @@ python train_IdeaVisual.py -conf configs/ideavisual.yaml -c <ckpt-dir> --ft <you
 - `--ft` is the pretrained model path used for fine-tuning.
 - `--gpus` is your GPU numbers.
 
-
 ## Inference
-The code will be released after the paper is officially accepted.
+
+```bash
+python inference_IdeaVisual.py --checkpoint runs/stage3/latest.pt --image examples/source.png --depth examples/source_depth.npy --instruction "Show the content on the monitor screen" --steps 50 --cfg-scale 3.0 --seed 42 --device cuda --output runs/generated
+```
+
+Repeat `--instruction` to generate several requested views of one object:
+
+```bash
+python inference_IdeaVisual.py --checkpoint runs/stage3/latest.pt --image examples/source.png --depth examples/source_depth.npy --instruction "Show the screen" --instruction "Show the connector panel behind the monitor" --device cuda --output runs/multiple_intents
+```
+
+Each instruction is sampled separately using the same seed. Outputs are PNGs plus `generation.json`. Multiple outputs are not jointly constrained by a new cross-view consistency loss; 3D consistency requires trained-model validation. Input/source depth preprocessing must match training. CLIP truncates text at its context limit; the interaction module does not make its underlying encoder unlimited in context length.
+
+## Evaluation
+
+```bash
+python evaluate_IdeaVisual.py --checkpoint runs/stage3/latest.pt --manifest Answerer_dataset/pairs.json --split test --steps 50 --device cuda --output runs/eval
+# Optional pretrained perceptual and distribution metrics:
+python evaluate_IdeaVisual.py --checkpoint runs/stage3/latest.pt --manifest Answerer_dataset/pairs.json --split test --steps 50 --device cuda --output runs/eval_full --lpips --fid
+```
+
+Paired RGB PSNR and SSIM are always computed; LPIPS uses AlexNet; optional FID uses 2048-dimensional Inception features through torchmetrics/torch-fidelity. Metric networks may download their weights on first use. Meaningful FID requires a large representative sample set, not the four-item demo. SSIM uses an 11x11 Gaussian kernel, sigma 1.5, valid convolution and RGB range `[0,1]`. Results include per-pair scores and image outputs.
+
+## Citation
+
+```bibtex
+@article{chen2025ideavisual,
+  title={Idea Visual: Intent-Driven View Synthesis for Smart Mobile Devices via Retrieval-Augmented Diffusion Models},
+  author={Chen, Jubo and Yu, Xiaosheng and Tang, Yangpu and Jiang, Zhengxuan},
+  journal={IEEE Transactions on Consumer Electronics},
+  volume={71},
+  number={4},
+  pages={11791--11800},
+  year={2025},
+  doi={10.1109/TCE.2025.3624269}
+}
+```
